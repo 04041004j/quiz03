@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>중2 국어: 타당성 평가하며 읽기 마스터</title>
+    <title>중2 국어: 타당성 평가 & 어휘 마스터🍎</title>
     <style>
         :root { --primary: #4a90e2; --success: #2ecc71; --error: #e74c3c; --bg: #f8f9fa; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
@@ -28,7 +28,7 @@
 <div id="quiz-container">
     <div id="game-area">
         <div class="header">
-            <span id="progress-text" style="font-weight: bold; color: #64748b;">문제 1 / 10</span>
+            <span id="progress-text" style="font-weight: bold; color: #64748b;">문제 1 / 18</span>
             <span id="timer-text" style="font-weight: bold; color: var(--primary);">20초</span>
         </div>
         <div class="timer-bar"><div id="timer-progress"></div></div>
@@ -48,34 +48,33 @@
 
 <script>
     const allQuestions = [
-        // [추가] 설명 방법 및 내용 조직의 타당성 (보류 문항 포함)
-        { q: "글에서 쓰인 '설명 방법'이 적절한지 평가할 때 가장 핵심적인 두 가지 기준은?", a: ["적합성과 효과성", "참신성과 유희성", "주관성과 감동성", "길이와 화려함"], correct: 0, exp: "설명 방법이 대상의 특성에 <b>적합</b>한지, 독자의 이해를 돕는 데 <b>효과적</b>인지가 타당성의 기준입니다." },
-        { q: "본론에서 '현금 없는 사회의 문제점'을 세 가지로 나열하여 제시한 조직 방식의 타당성에 대한 설명으로 옳은 것은?", a: ["문제점들을 대등하게 제시하여 주장을 효과적으로 뒷받침한다.", "시간 순서에 따른 구성으로 흥미를 유발한다.", "주관적인 느낌을 강조하여 공감을 자극한다.", "사건의 원인과 결과를 분석하는 데만 치중한다."], correct: 0, exp: "<b>나열 구조</b>는 여러 근거를 대등하게 보여줌으로써 주장의 설득력을 높이는 데 적합합니다." },
-        { q: "전자 지급 수단을 사용하기 어려운 사람들이 겪는 불편을 구체적인 사례로 제시할 때, '예시'의 방법이 타당한 이유는?", a: ["독자가 상황을 구체적으로 떠올려 내용을 쉽게 이해할 수 있기 때문에", "대상의 개념을 사전적으로 정의해주기 때문에", "두 대상의 공통점과 차이점을 한눈에 보여주기 때문에", "원인과 결과의 논리적 흐름을 강조하기 때문에"], correct: 0, exp: "구체적인 사례(예시)는 추상적인 설명을 독자가 실감 나게 이해하도록 돕는 <b>효과성</b>이 있습니다." },
-        { q: "논설문에서 '근거의 타당성'을 평가할 때 점검해야 할 질문으로 적절하지 않은 것은?", a: ["근거가 글쓴이의 기분을 좋게 만드는가?", "근거가 주장과 밀접하게 관련되어 있는가?", "근거가 믿을 만한 사실인가?", "근거가 주장을 충분히 뒷받침하는가?"], correct: 0, exp: "근거는 객관적 사실성, 관련성, 충분성을 갖추어야 하며 글쓴이의 기분과는 무관합니다." },
-
-        // [기본] 논설문의 특징 및 구조
-        { q: "논설문의 일반적인 특징으로 가장 적절한 것은?", a: ["주장과 이를 뒷받침하는 이유, 근거로 구성된다.", "다양한 설명 방법을 사용하여 정보를 전달한다.", "글쓴이의 주관적인 감동과 체험을 주로 다룬다.", "사건의 발생 순서에 따라 내용을 조직한다."], correct: 0, exp: "논설문은 독자를 설득하기 위해 논리적인 체계를 갖춘 글입니다." },
-        { q: "논설문의 3단 구성 중 '결론' 부분의 역할로 알맞은 것은?", a: ["주장을 강조하고 독자의 실천을 촉구함", "문제 제기 및 독자의 흥미 유발", "주장을 뒷받침하는 구체적 근거 제시", "대상에 대한 객관적인 정보 전달"], correct: 0, exp: "결론은 앞서 논의한 내용을 요약하고 주장을 다시 한번 강조하는 단계입니다." },
-        
-        // [설명 방법 응용]
-        { q: "'현금 없는 사회'라는 용어의 뜻을 명확하게 밝혀 독자의 이해를 돕는 설명 방법은?", a: ["정의", "예시", "인과", "대조"], correct: 0, exp: "용어의 뜻이나 개념을 밝히는 방법은 <b>정의</b>입니다." },
-        { q: "전자 결제의 편리함과 대비되는 '사생활 침해 우려'를 설명할 때 효과적인 방법은?", a: ["대조", "정의", "분석", "분류"], correct: 0, exp: "서로 다른 점을 대비시켜 강조하는 방법은 <b>대조</b>입니다." },
-        { q: "현금 없는 사회로 전환될 때 발생할 경제적 손해를 원인과 결과로 설명하는 방법은?", a: ["인과", "대조", "예시", "정의"], correct: 0, exp: "까닭(원인)과 그에 따른 현상(결과)을 설명하는 것은 <b>인과</b>입니다." },
-
-        // [어휘 및 세부 내용]
-        { q: "빈칸에 알맞은 단어: '노르웨이는 현금을 사용할 권리를 법률로 분명하게 (  )하고 있다.'", a: ["명시", "도용", "부과", "선호"], correct: 0, exp: "내용을 명확하게 글로 드러내어 보이는 것을 <b>명시</b>라고 합니다." },
-        { q: "단어 뜻풀이가 바르지 않은 것은?", a: ["연회비: 한 달에 한 번씩 내는 돈", "도용되다: 명의가 몰래 쓰이다", "부과하다: 세금 등을 부담하게 하다", "선호하다: 여럿 가운데 가려서 좋아하다"], correct: 0, exp: "연회비는 <b>일 년에 한 번씩</b> 내는 돈입니다." }
+        { q: "남의 이름이나 신분, 물건 등을 몰래 쓰는 것을 뜻하는 단어는?", a: ["도용", "명시", "부과", "선호"], correct: 0, exp: "남의 정보를 몰래 가져다 쓰는 행위는 <b>도용</b>입니다." },
+        { q: "법률이나 글에 내용을 분명하게 드러내 보이는 것을 뜻하는 단어는?", a: ["명시", "도용", "부과", "선호"], correct: 0, exp: "분명하게 밝혀 적어 놓는 것을 <b>명시</b>라고 합니다." },
+        { q: "세금이나 수수료 등을 매겨서 부담하게 하는 것을 뜻하는 단어는?", a: ["부과", "도용", "명시", "선호"], correct: 0, exp: "의무나 세금을 지우는 행위는 <b>부과</b>입니다." },
+        { q: "여럿 가운데서 특별히 가려서 좋아하는 것을 뜻하는 단어는?", a: ["선호", "도용", "명시", "부과"], correct: 0, exp: "특별히 더 좋아하는 것을 <b>선호</b>라고 합니다." },
+        { q: "다음 중 일 년에 한 번씩 내는 돈을 가리키는 올바른 어휘는?", a: ["연회비", "월회비", "가입비", "수수료"], correct: 0, exp: "일 년(연) 단위로 내는 회비이므로 <b>연회비</b>입니다." },
+        { q: "납세 의무자가 정당한 방법 없이 세금을 내지 않는 행위를 뜻하는 말은?", a: ["탈세", "절세", "납세", "도용"], correct: 0, exp: "세금을 내지 않으려고 수단을 쓰는 행위는 <b>탈세</b>입니다." },
+        { q: "빈칸에 알맞은 단어: '노르웨이는 현금을 사용할 권리를 법률로 분명하게 (  )하고 있다.'", a: ["명시", "도용", "부과", "선호"], correct: 0, exp: "법률로 확실히 밝히는 것이므로 <b>명시</b>가 적절합니다." },
+        { q: "'부과하다'와 가장 유사한 상황으로 적절한 것은?", a: ["상점에 환경 부담금을 매길 때", "친구에게 돈을 빌릴 때", "우승자에게 상장을 줄 때", "이름을 몰래 쓸 때"], correct: 0, exp: "세금이나 부담금을 매기는 것이 <b>부과</b>의 대표적인 예입니다." },
+        { q: "설명 방법의 타당성을 평가하는 두 가지 핵심 기준은?", a: ["설명 대상에 적합, 독자의 이해에 효과적", "참신한 표현, 재미있는 내용", "주관적인 느낌, 예술적인 문체", "글의 길이, 화려한 그림"], correct: 0, exp: "설명 방법은 대상과 <b>적합</b>해야 하며, 이해를 돕는 데 <b>효과적</b>이어야 합니다." },
+        { q: "'정의'를 사용하여 용어의 뜻을 명확히 풀이했을 때 얻는 타당한 효과는?", a: ["독자가 용어의 개념을 정확히 이해하게 됨", "글의 분위기가 감동적으로 변함", "사건의 원인을 깊이 있게 파악함", "공통점과 차이점이 부각됨"], correct: 0, exp: "정의는 대상의 본질적 개념을 밝혀 오해를 줄이고 이해를 돕습니다." },
+        { q: "설명 방법이 대상의 특성과 어울리지 않아 타당성이 떨어지는 경우는?", a: ["사과의 구성 요소를 설명하며 '대조'만 사용함", "단어의 뜻을 풀이하며 '정의'를 사용함", "구체적인 사례를 들며 '예시'를 사용함", "원인과 결과를 밝히며 '인과'를 사용함"], correct: 0, exp: "구성 요소를 쪼개어 설명할 때는 <b>분석</b>이 적합하며, 차이점을 밝히는 대조는 부적합합니다." },
+        { q: "현금과 전자 결제의 차이점을 부각하여 설명할 때 '대조'가 타당한 이유는?", a: ["두 대상의 차이점이 분명하게 드러나기 때문에", "대상의 유래를 알 수 있기 때문에", "전체적인 구조를 파악하기 좋기 때문에", "독자의 감동을 끌어내기 때문에"], correct: 0, exp: "<b>대조</b>는 차이점을 선명하게 보여주는 데 매우 효과적인 방법입니다." },
+        { q: "논설문의 서론에서 독자의 관심을 끌기 위해 하는 활동으로 적절한 것은?", a: ["사회적 배경이나 화제를 제시함", "최종적인 주장을 요약함", "세부 근거를 3가지 이상 나열함", "설명 방법의 타당성을 평가함"], correct: 0, exp: "서론은 글의 입구로서 화제를 도입하고 흥미를 유발하는 단계입니다." },
+        { q: "논설문의 본론에서 주장을 뒷받침하기 위해 주로 제시하는 것은?", a: ["이유와 구체적인 근거", "글을 쓰게 된 동기", "주장을 다시 강조하는 문구", "어려운 용어의 사전적 의미"], correct: 0, exp: "본론은 논리적인 <b>근거</b>를 통해 독자를 설득하는 핵심 부분입니다." },
+        { q: "논설문의 마무리 단계(결론)에서 반드시 포함되어야 할 내용은?", a: ["내용 요약 및 주장 강조", "새로운 문제 제기", "구체적인 사례 나열", "작가의 개인적인 경험"], correct: 0, exp: "결론은 내용을 갈무리하고 <b>주장을 재강조</b>하며 마무리합니다." },
+        { q: "문제점 3가지를 '나열 구조'로 구성했을 때 얻을 수 있는 타당한 효과는?", a: ["여러 근거를 대등하게 보여주어 주장을 탄탄히 함", "시간의 흐름을 한눈에 보게 함", "원인과 결과를 논리적으로 연결함", "대상의 개념을 사전적으로 풀이함"], correct: 0, exp: "나열 구조는 여러 정보를 효과적으로 배치하여 주장의 설득력을 높입니다." },
+        { q: "서론-본론-결론의 짜임이 논리적으로 자연스러운지 점검하는 것은 무엇에 대한 평가인가?", a: ["내용 조직의 타당성", "표현의 참신성", "자료의 최신성", "글쓴이의 창의성"], correct: 0, exp: "글의 구성 요소들이 유기적으로 연결되었는지 보는 것은 <b>조직의 타당성</b>입니다." },
+        { q: "이 글의 설명 방법과 조직 방식이 주제 전달 및 (  )에 기여하는지 평가해야 한다.", a: ["주장 강조", "독자 위로", "창의성 발휘", "기록 보존"], correct: 0, exp: "논설문의 조직 방식은 궁극적으로 <b>주장을 강조</b>하고 설득하는 데 기여해야 합니다." }
     ];
 
-    let quizData = [];
+    let quizData = [...allQuestions]; // 랜덤 셔플 제외하고 모든 문제 사용
     let currentIdx = 0;
     let score = 0;
     let timeLeft = 20;
     let timerInterval;
 
     function initQuiz() {
-        quizData = [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
         loadQuestion();
     }
 
@@ -100,17 +99,23 @@
 
     function loadQuestion() {
         const data = quizData[currentIdx];
-        document.getElementById("progress-text").innerText = `문제 ${currentIdx + 1} / 10`;
+        document.getElementById("progress-text").innerText = `문제 ${currentIdx + 1} / ${quizData.length}`;
         document.getElementById("question").innerText = data.q;
         document.getElementById("explanation").style.display = "none";
         document.getElementById("next-btn").style.display = "none";
         
         const optionsDiv = document.getElementById("options");
         optionsDiv.innerHTML = "";
-        data.a.forEach((opt, i) => {
+        
+        // 보기만 랜덤 셔플
+        const shuffledOptions = [...data.a].sort(() => Math.random() - 0.5);
+        shuffledOptions.forEach((opt) => {
             const btn = document.createElement("button");
             btn.innerText = opt;
-            btn.onclick = () => checkAnswer(i);
+            btn.onclick = () => {
+                const originalIndex = data.a.indexOf(opt);
+                checkAnswer(originalIndex);
+            };
             optionsDiv.appendChild(btn);
         });
         startTimer();
@@ -122,13 +127,18 @@
         const btns = document.querySelectorAll(".options button");
         btns.forEach(b => b.disabled = true);
 
+        const correctText = data.a[data.correct];
+
         if (idx === data.correct) {
-            btns[idx].classList.add("correct");
-            score += 10;
+            btns.forEach(b => { if(b.innerText === correctText) b.classList.add("correct"); });
+            score += Math.round(100 / quizData.length); // 전체 문제 수에 맞게 점수 계산
             speak("정답입니다!");
         } else {
-            if (idx !== -1) btns[idx].classList.add("wrong");
-            btns[data.correct].classList.add("correct");
+            if (idx !== -1) {
+                const selectedText = data.a[idx];
+                btns.forEach(b => { if(b.innerText === selectedText) b.classList.add("wrong"); });
+            }
+            btns.forEach(b => { if(b.innerText === correctText) b.classList.add("correct"); });
             speak("오답입니다.");
         }
         document.getElementById("explanation").innerHTML = data.exp;
@@ -138,15 +148,17 @@
 
     function handleNext() {
         currentIdx++;
-        if (currentIdx < 10) loadQuestion();
+        if (currentIdx < quizData.length) loadQuestion();
         else showResult();
     }
 
     function showResult() {
         document.getElementById("game-area").style.display = "none";
         document.getElementById("result-area").style.display = "block";
+        // 마지막 점수 보정 (100점 만점 기준)
+        if(score > 100) score = 100;
         document.getElementById("final-score").innerText = score;
-        const msg = score >= 90 ? "💯 완벽해요! 비판적 읽기 능력이 매우 뛰어납니다!" : score >= 70 ? "👏 훌륭해요! 글의 타당성을 잘 평가하고 있군요." : "📖 다시 한번 도전하며 개념을 탄탄하게 잡아봅시다!";
+        const msg = score >= 90 ? "💯 완벽해요! 비판적 읽기 마스터 인정!" : score >= 70 ? "👏 아주 훌륭합니다! 타당성을 잘 파악하고 있네요." : "📖 다시 한번 도전하며 핵심 어휘와 개념을 익혀봅시다!";
         document.getElementById("feedback-msg").innerText = msg;
     }
 
