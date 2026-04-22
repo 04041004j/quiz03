@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중2 국어: 타당성 평가하며 읽기 마스터</title>
+    <style>
+        :root { --primary: #4a90e2; --success: #2ecc71; --error: #e74c3c; --bg: #f8f9fa; }
+        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        #quiz-container { background: white; width: 95%; max-width: 650px; padding: 2rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .timer-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 1.5rem; overflow: hidden; }
+        #timer-progress { width: 100%; height: 100%; background: var(--primary); transition: width 0.1s linear; }
+        .question { font-size: 1.15rem; font-weight: 700; color: #2c3e50; margin-bottom: 1.5rem; line-height: 1.6; word-break: keep-all; white-space: pre-wrap; }
+        .options { display: grid; gap: 0.8rem; }
+        button { padding: 0.9rem 1.2rem; border: 2px solid #edf2f7; border-radius: 12px; background: white; cursor: pointer; transition: all 0.2s; font-size: 1rem; text-align: left; color: #4a5568; line-height: 1.4; }
+        button:hover:not(:disabled) { border-color: var(--primary); background: #f0f7ff; }
+        .correct { background-color: #d1fae5 !important; border-color: var(--success) !important; color: #065f46; font-weight: bold; }
+        .wrong { background-color: #fee2e2 !important; border-color: var(--error) !important; color: #991b1b; }
+        #explanation { margin-top: 1.5rem; padding: 1.2rem; background: #f1f5f9; border-radius: 10px; display: none; font-size: 0.95rem; border-left: 5px solid var(--primary); color: #334155; }
+        #next-btn { width: 100%; margin-top: 1.5rem; padding: 1rem; background: #2c3e50; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; display: none; font-size: 1.1rem; }
+        #result-area { text-align: center; display: none; }
+        .score-circle { width: 140px; height: 140px; border-radius: 50%; background: var(--primary); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 1.5rem auto; font-size: 2.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div id="game-area">
+        <div class="header">
+            <span id="progress-text" style="font-weight: bold; color: #64748b;">문제 1 / 10</span>
+            <span id="timer-text" style="font-weight: bold; color: var(--primary);">20초</span>
+        </div>
+        <div class="timer-bar"><div id="timer-progress"></div></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div id="explanation"></div>
+        <button id="next-btn" onclick="handleNext()">다음 문제로 →</button>
+    </div>
+    
+    <div id="result-area">
+        <h1>🎮 학습 완료!</h1>
+        <div class="score-circle"><span id="final-score">0</span><span style="font-size: 1rem;">점</span></div>
+        <p id="feedback-msg" style="margin-bottom: 2rem; color: #475569; font-weight: 500;"></p>
+        <button onclick="location.reload()" style="background:var(--primary); color:white; width:100%; padding: 1rem; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">다시 도전하기</button>
+    </div>
+</div>
+
+<script>
+    const allQuestions = [
+        // [추가] 설명 방법 및 내용 조직의 타당성 (보류 문항 포함)
+        { q: "글에서 쓰인 '설명 방법'이 적절한지 평가할 때 가장 핵심적인 두 가지 기준은?", a: ["적합성과 효과성", "참신성과 유희성", "주관성과 감동성", "길이와 화려함"], correct: 0, exp: "설명 방법이 대상의 특성에 <b>적합</b>한지, 독자의 이해를 돕는 데 <b>효과적</b>인지가 타당성의 기준입니다." },
+        { q: "본론에서 '현금 없는 사회의 문제점'을 세 가지로 나열하여 제시한 조직 방식의 타당성에 대한 설명으로 옳은 것은?", a: ["문제점들을 대등하게 제시하여 주장을 효과적으로 뒷받침한다.", "시간 순서에 따른 구성으로 흥미를 유발한다.", "주관적인 느낌을 강조하여 공감을 자극한다.", "사건의 원인과 결과를 분석하는 데만 치중한다."], correct: 0, exp: "<b>나열 구조</b>는 여러 근거를 대등하게 보여줌으로써 주장의 설득력을 높이는 데 적합합니다." },
+        { q: "전자 지급 수단을 사용하기 어려운 사람들이 겪는 불편을 구체적인 사례로 제시할 때, '예시'의 방법이 타당한 이유는?", a: ["독자가 상황을 구체적으로 떠올려 내용을 쉽게 이해할 수 있기 때문에", "대상의 개념을 사전적으로 정의해주기 때문에", "두 대상의 공통점과 차이점을 한눈에 보여주기 때문에", "원인과 결과의 논리적 흐름을 강조하기 때문에"], correct: 0, exp: "구체적인 사례(예시)는 추상적인 설명을 독자가 실감 나게 이해하도록 돕는 <b>효과성</b>이 있습니다." },
+        { q: "논설문에서 '근거의 타당성'을 평가할 때 점검해야 할 질문으로 적절하지 않은 것은?", a: ["근거가 글쓴이의 기분을 좋게 만드는가?", "근거가 주장과 밀접하게 관련되어 있는가?", "근거가 믿을 만한 사실인가?", "근거가 주장을 충분히 뒷받침하는가?"], correct: 0, exp: "근거는 객관적 사실성, 관련성, 충분성을 갖추어야 하며 글쓴이의 기분과는 무관합니다." },
+
+        // [기본] 논설문의 특징 및 구조
+        { q: "논설문의 일반적인 특징으로 가장 적절한 것은?", a: ["주장과 이를 뒷받침하는 이유, 근거로 구성된다.", "다양한 설명 방법을 사용하여 정보를 전달한다.", "글쓴이의 주관적인 감동과 체험을 주로 다룬다.", "사건의 발생 순서에 따라 내용을 조직한다."], correct: 0, exp: "논설문은 독자를 설득하기 위해 논리적인 체계를 갖춘 글입니다." },
+        { q: "논설문의 3단 구성 중 '결론' 부분의 역할로 알맞은 것은?", a: ["주장을 강조하고 독자의 실천을 촉구함", "문제 제기 및 독자의 흥미 유발", "주장을 뒷받침하는 구체적 근거 제시", "대상에 대한 객관적인 정보 전달"], correct: 0, exp: "결론은 앞서 논의한 내용을 요약하고 주장을 다시 한번 강조하는 단계입니다." },
+        
+        // [설명 방법 응용]
+        { q: "'현금 없는 사회'라는 용어의 뜻을 명확하게 밝혀 독자의 이해를 돕는 설명 방법은?", a: ["정의", "예시", "인과", "대조"], correct: 0, exp: "용어의 뜻이나 개념을 밝히는 방법은 <b>정의</b>입니다." },
+        { q: "전자 결제의 편리함과 대비되는 '사생활 침해 우려'를 설명할 때 효과적인 방법은?", a: ["대조", "정의", "분석", "분류"], correct: 0, exp: "서로 다른 점을 대비시켜 강조하는 방법은 <b>대조</b>입니다." },
+        { q: "현금 없는 사회로 전환될 때 발생할 경제적 손해를 원인과 결과로 설명하는 방법은?", a: ["인과", "대조", "예시", "정의"], correct: 0, exp: "까닭(원인)과 그에 따른 현상(결과)을 설명하는 것은 <b>인과</b>입니다." },
+
+        // [어휘 및 세부 내용]
+        { q: "빈칸에 알맞은 단어: '노르웨이는 현금을 사용할 권리를 법률로 분명하게 (  )하고 있다.'", a: ["명시", "도용", "부과", "선호"], correct: 0, exp: "내용을 명확하게 글로 드러내어 보이는 것을 <b>명시</b>라고 합니다." },
+        { q: "단어 뜻풀이가 바르지 않은 것은?", a: ["연회비: 한 달에 한 번씩 내는 돈", "도용되다: 명의가 몰래 쓰이다", "부과하다: 세금 등을 부담하게 하다", "선호하다: 여럿 가운데 가려서 좋아하다"], correct: 0, exp: "연회비는 <b>일 년에 한 번씩</b> 내는 돈입니다." }
+    ];
+
+    let quizData = [];
+    let currentIdx = 0;
+    let score = 0;
+    let timeLeft = 20;
+    let timerInterval;
+
+    function initQuiz() {
+        quizData = [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
+        loadQuestion();
+    }
+
+    function speak(text) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 1.0;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function startTimer() {
+        timeLeft = 20;
+        document.getElementById("timer-progress").style.width = "100%";
+        timerInterval = setInterval(() => {
+            timeLeft -= 0.1;
+            document.getElementById("timer-progress").style.width = (timeLeft / 20 * 100) + "%";
+            document.getElementById("timer-text").innerText = Math.ceil(timeLeft) + "초";
+            if (timeLeft <= 0) { clearInterval(timerInterval); checkAnswer(-1); }
+        }, 100);
+    }
+
+    function loadQuestion() {
+        const data = quizData[currentIdx];
+        document.getElementById("progress-text").innerText = `문제 ${currentIdx + 1} / 10`;
+        document.getElementById("question").innerText = data.q;
+        document.getElementById("explanation").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+        
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+        data.a.forEach((opt, i) => {
+            const btn = document.createElement("button");
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(i);
+            optionsDiv.appendChild(btn);
+        });
+        startTimer();
+    }
+
+    function checkAnswer(idx) {
+        clearInterval(timerInterval);
+        const data = quizData[currentIdx];
+        const btns = document.querySelectorAll(".options button");
+        btns.forEach(b => b.disabled = true);
+
+        if (idx === data.correct) {
+            btns[idx].classList.add("correct");
+            score += 10;
+            speak("정답입니다!");
+        } else {
+            if (idx !== -1) btns[idx].classList.add("wrong");
+            btns[data.correct].classList.add("correct");
+            speak("오답입니다.");
+        }
+        document.getElementById("explanation").innerHTML = data.exp;
+        document.getElementById("explanation").style.display = "block";
+        document.getElementById("next-btn").style.display = "block";
+    }
+
+    function handleNext() {
+        currentIdx++;
+        if (currentIdx < 10) loadQuestion();
+        else showResult();
+    }
+
+    function showResult() {
+        document.getElementById("game-area").style.display = "none";
+        document.getElementById("result-area").style.display = "block";
+        document.getElementById("final-score").innerText = score;
+        const msg = score >= 90 ? "💯 완벽해요! 비판적 읽기 능력이 매우 뛰어납니다!" : score >= 70 ? "👏 훌륭해요! 글의 타당성을 잘 평가하고 있군요." : "📖 다시 한번 도전하며 개념을 탄탄하게 잡아봅시다!";
+        document.getElementById("feedback-msg").innerText = msg;
+    }
+
+    initQuiz();
+</script>
+</body>
+</html>
